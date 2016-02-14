@@ -8629,6 +8629,22 @@ static int cpu_stats_show(struct seq_file *sf, void *v)
 
 	return 0;
 }
+
+static int cpu_stats_reset(struct cgroup_subsys_state *css, struct cftype *cft,
+                u64 reset)
+{
+	struct task_group *tg = css_tg(css);
+	struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
+
+	raw_spin_lock(&cfs_b->lock);
+	cfs_b->nr_periods = 0;
+	cfs_b->nr_throttled =0;
+	cfs_b->throttled_time = 0;
+	raw_spin_unlock(&cfs_b->lock);
+
+	return 0;
+}
+
 #endif /* CONFIG_CFS_BANDWIDTH */
 #endif /* CONFIG_FAIR_GROUP_SCHED */
 
@@ -8680,6 +8696,7 @@ static struct cftype cpu_files[] = {
 	{
 		.name = "stat",
 		.seq_show = cpu_stats_show,
+		.write_u64 = cpu_stats_reset,
 	},
 #endif
 #ifdef CONFIG_RT_GROUP_SCHED
