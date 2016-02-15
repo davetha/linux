@@ -8638,7 +8638,7 @@ static int cpu_stats_reset(struct cgroup_subsys_state *css, struct cftype *cft,
 
 	raw_spin_lock(&cfs_b->lock);
 	cfs_b->nr_periods = 0;
-	cfs_b->nr_throttled =0;
+	cfs_b->nr_throttled = 0;
 	cfs_b->throttled_time = 0;
 	raw_spin_unlock(&cfs_b->lock);
 
